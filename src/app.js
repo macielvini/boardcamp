@@ -32,11 +32,20 @@ app.post("/categories", async (req, res) => {
     await connection.query("INSERT INTO categories (name) VALUES ($1);", [
       name,
     ]);
-    // res.send(exist);
+
     res.sendStatus(201);
   } catch (error) {
     console.log(error);
     res.sendStatus(500);
+  }
+});
+
+app.get("/categories", async (req, res) => {
+  try {
+    const categories = await connection.query("SELECT * FROM categories");
+    res.status(200).send(categories.rows);
+  } catch (error) {
+    console.log(error);
   }
 });
 
