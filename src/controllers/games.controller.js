@@ -14,3 +14,23 @@ export const insertGame = async (req, res) => {
     console.log(error);
   }
 };
+
+export const getGames = async (req, res) => {
+  const { name } = req.query;
+  try {
+    if (name) {
+      const games = await connection.query(
+        "SELECT * FROM games WHERE LOWER(name) LIKE $1",
+        [`%${name}%`]
+      );
+      console.log(games);
+      return res.send(games.rows);
+    }
+
+    const games = await connection.query("SELECT * FROM games");
+    res.send(games.rows);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+};
