@@ -3,11 +3,16 @@ import cors from "cors";
 import dotenv from "dotenv";
 import { connection } from "./server.js";
 
+import categoriesRouter from "../routes/categories.router.js";
+
+dotenv.config();
+
 const app = express();
 
 app.use(cors());
 app.use(express.json());
-dotenv.config();
+
+app.use(categoriesRouter);
 
 app.get("/", async (req, res) => {
   const result = await connection.query("SELECT * FROM ");
@@ -46,6 +51,22 @@ app.get("/categories", async (req, res) => {
     res.status(200).send(categories.rows);
   } catch (error) {
     console.log(error);
+  }
+});
+
+app.post("/games", async (req, res) => {
+  const { name, image, stockTotal, categoryId, pricePerDay } = req.body;
+
+  try {
+    await connection.query(
+      'INSERT INTO games (name, image, "stockTotal", "categoryId", "pricePerDay") VALUES ($1, $2, $3, $4, $5)',
+      [name, image, stockTotal, categoryId, pricePerDay]
+    );
+
+    res.sendStatus(202);
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
   }
 });
 
