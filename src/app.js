@@ -5,6 +5,7 @@ import { connection } from "./server.js";
 
 import categoriesRouter from "./routes/categories.router.js";
 import gamesRouter from "./routes/games.router.js";
+import customersRouter from "./routes/customers.router.js";
 
 dotenv.config();
 
@@ -15,5 +16,6 @@ app.use(express.json());
 
 app.use(categoriesRouter);
 app.use(gamesRouter);
+app.use(customersRouter);
 
 app.listen(4000, () => console.log("Server running in port 4000"));
