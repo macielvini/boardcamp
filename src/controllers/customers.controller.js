@@ -1,9 +1,12 @@
 import { connection } from "../server.js";
 
 export const getCustomers = async (req, res) => {
+  const { customer } = req;
   try {
+    res.send(customer);
   } catch (error) {
     console.log(error);
+    res.sendStatus(500);
   }
 };
 

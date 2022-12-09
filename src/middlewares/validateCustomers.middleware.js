@@ -30,3 +30,63 @@ export const validateCustomers = async (req, res, next) => {
     res.sendStatus(500);
   }
 };
+
+export const findCustomerId = async (req, res, next) => {
+  const { id } = req.params;
+
+  try {
+    if (cpf) {
+      const customer = await connection.query(
+        `
+    SELECT * 
+    FROM customers 
+    WHERE cpf=$1
+    `,
+        [`%${cpf}%`]
+      );
+
+      req.customer = customer.rows[0];
+      next();
+      return;
+    }
+
+    customer = await connection.query(
+      `
+    SELECT * 
+    FROM customers 
+    WHERE id=$1
+    `,
+      [id]
+    );
+
+    if (!customer.rowCount) return res.sendStatus(404);
+
+    req.customer = customer.rows[0];
+    next();
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const findCustomerCpf = async (req, res, next) => {
+  const { cpf } = req.query;
+
+  try {
+    const customer = await connection.query(
+      `
+    SELECT * 
+    FROM customers 
+    WHERE cpf LIKE $1;
+    `,
+      [`${cpf}%`]
+    );
+
+    if (!customer.rowCount) res.sendStatus(404);
+
+    req.customer = customer.rows;
+    next();
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+};
