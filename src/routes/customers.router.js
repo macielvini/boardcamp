@@ -16,8 +16,17 @@ const router = Router();
 router.get("/customers/:id", findCustomerId, getCustomers);
 router.get("/customers", findCustomerCpf, getCustomers);
 
-router.use(validateCustomerSchema);
-router.post("/customers", validateCustomerCpf, insertCustomer);
-router.patch("/customers/:id", findCustomerId, updateCustomer);
+router.post(
+  "/customers",
+  validateCustomerSchema,
+  validateCustomerCpf,
+  insertCustomer
+);
+router.patch(
+  "/customers/:id",
+  validateCustomerSchema,
+  findCustomerId,
+  updateCustomer
+);
 
 export default router;
