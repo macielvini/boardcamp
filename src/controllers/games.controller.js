@@ -23,7 +23,6 @@ export const getGames = async (req, res) => {
         "SELECT * FROM games WHERE LOWER(name) LIKE $1",
         [`%${name}%`]
       );
-      console.log(games);
       return res.send(games.rows);
     }
 

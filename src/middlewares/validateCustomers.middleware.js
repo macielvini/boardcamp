@@ -4,8 +4,7 @@ import { connection } from "../server.js";
 export const validateCustomers = async (req, res, next) => {
   const { body } = req;
   const { error } = customerSchema.validate(body, { abortEarly: false });
-
-  console.log(body);
+  const { id } = req.params;
 
   if (error) {
     const errors = error.details.map((e) => e.message);
@@ -35,14 +34,14 @@ export const findCustomerId = async (req, res, next) => {
   const { id } = req.params;
 
   try {
-    if (cpf) {
+    if (id) {
       const customer = await connection.query(
         `
     SELECT * 
     FROM customers 
-    WHERE cpf=$1
+    WHERE id=$1
     `,
-        [`%${cpf}%`]
+        [`%${id}%`]
       );
 
       req.customer = customer.rows[0];
