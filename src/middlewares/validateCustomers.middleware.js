@@ -1,15 +1,22 @@
 import { customerSchema } from "../models/customers.schema.js";
 import { connection } from "../server.js";
 
-export const validateCustomers = async (req, res, next) => {
+export const validateCustomerSchema = async (req, res, next) => {
   const { body } = req;
+
   const { error } = customerSchema.validate(body, { abortEarly: false });
-  const { id } = req.params;
 
   if (error) {
     const errors = error.details.map((e) => e.message);
     return res.status(400).send({ message: errors });
   }
+
+  next();
+};
+
+export const validateCustomerCpf = async (req, res, next) => {
+  const { body } = req;
+  const { id } = req.params;
 
   try {
     const customer = await connection.query(
@@ -34,22 +41,7 @@ export const findCustomerId = async (req, res, next) => {
   const { id } = req.params;
 
   try {
-    if (id) {
-      const customer = await connection.query(
-        `
-    SELECT * 
-    FROM customers 
-    WHERE id=$1
-    `,
-        [`%${id}%`]
-      );
-
-      req.customer = customer.rows[0];
-      next();
-      return;
-    }
-
-    customer = await connection.query(
+    const customer = await connection.query(
       `
     SELECT * 
     FROM customers 
@@ -64,6 +56,7 @@ export const findCustomerId = async (req, res, next) => {
     next();
   } catch (error) {
     console.log(error);
+    res.sendStatus(500);
   }
 };
 
