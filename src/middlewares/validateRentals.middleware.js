@@ -14,6 +14,35 @@ export const validateRentalSchema = async (req, res, next) => {
   next();
 };
 
+export const validateCloseRental = async (req, res, next) => {
+  const { id } = req.params;
+
+  try {
+    const rental = await connection.query(
+      `
+    SELECT *
+    FROM rentals
+    WHERE id=$1
+    `,
+      [id]
+    );
+
+    if (!rental.rowCount) {
+      return res.status(404).send({ message: "rental id not found" });
+    }
+
+    if (rental.rows[0].returnDate) {
+      return res.status(400).send({ message: "this rental is already closed" });
+    }
+
+    req.rental = rental.rows[0];
+    next();
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+};
+
 export const validateRental = async (req, res, next) => {
   const { customerId, gameId, daysRented } = req.body;
 

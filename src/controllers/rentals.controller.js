@@ -41,3 +41,35 @@ export const insertRental = async (req, res) => {
     res.sendStatus(500);
   }
 };
+
+export const getRentals = async () => {
+  try {
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+};
+
+export const closeRental = async (req, res) => {
+  const { id } = req.params;
+  const { rental } = req;
+
+  const date = dayjs().format("YYYY-MM-DD");
+  const rentDiff = dayjs(date).diff(rental.rentDate, "day");
+  const delay = rentDiff - rental.daysRented > 0 ? rentDiff : null;
+
+  try {
+    await connection.query(
+      `
+    UPDATE rentals
+    SET "returnDate"=$1, "delayFee"=("originalPrice"/"daysRented")*$2
+    WHERE id=$3
+    `,
+      [date, rentDiff, id]
+    );
+
+    res.sendStatus(200);
+  } catch (error) {
+    console.log(error);
+  }
+};
