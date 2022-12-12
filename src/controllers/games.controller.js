@@ -12,6 +12,7 @@ export const insertGame = async (req, res) => {
     res.sendStatus(201);
   } catch (error) {
     console.log(error);
+    res.sendStatus(500);
   }
 };
 

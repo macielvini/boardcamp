@@ -32,5 +32,6 @@ export const validateGame = async (req, res, next) => {
     next();
   } catch (error) {
     console.log(error);
+    res.sendStatus(500);
   }
 };
