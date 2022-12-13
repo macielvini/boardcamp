@@ -22,7 +22,7 @@ router.post(
   validateCustomerCpf,
   insertCustomer
 );
-router.patch(
+router.put(
   "/customers/:id",
   validateCustomerSchema,
   findCustomerId,
