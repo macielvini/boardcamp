@@ -2,8 +2,8 @@ import { connection } from "../server.js";
 
 export const getCustomers = async (req, res) => {
   const { customer } = req;
-  const offset = req.query.offset ? req.query.offset : null;
-  const limit = req.query.limit ? req.query.limit : null;
+  const offset = req.query.offset || null;
+  const limit = req.query.limit || null;
 
   try {
     if (customer) {

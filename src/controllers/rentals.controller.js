@@ -43,15 +43,23 @@ export const insertRental = async (req, res) => {
 };
 
 export const getRentals = async (req, res) => {
+  const offset = req.query.offset || null;
+  const limit = req.query.limit || null;
+
   try {
-    const rentals = await connection.query(`
+    const rentals = await connection.query(
+      `
     SELECT rentals.*, 
     jsonb_build_object('id', customers.id, 'name', customers.name) AS customer,
     jsonb_build_object('id', games.id, 'name', games.name, 'categoryId', games."categoryId", 'categoryName', categories.name) AS games 
     FROM customers JOIN rentals ON customers.id=rentals."customerId"
     JOIN games ON rentals."gameId"=games.id
-    JOIN categories ON games."categoryId"=categories.id;
-    `);
+    JOIN categories ON games."categoryId"=categories.id
+    OFFSET $1
+    LIMIT $2;
+    `,
+      [offset, limit]
+    );
 
     res.send(rentals.rows);
   } catch (error) {
