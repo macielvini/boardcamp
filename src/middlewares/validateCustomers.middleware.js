@@ -64,18 +64,22 @@ export const findCustomerCpf = async (req, res, next) => {
   const { cpf } = req.query;
 
   try {
-    const customer = await connection.query(
-      `
-    SELECT * 
-    FROM customers 
-    WHERE cpf LIKE $1;
-    `,
-      [`${cpf}%`]
-    );
+    if (cpf) {
+      const customer = await connection.query(
+        `
+        SELECT * 
+        FROM customers 
+        WHERE cpf LIKE $1;
+        `,
+        [`${cpf}%`]
+      );
 
-    if (!customer.rowCount) res.sendStatus(404);
+      if (!customer.rowCount) res.sendStatus(404);
 
-    req.customer = customer.rows;
+      req.customer = customer.rows;
+      next();
+    }
+
     next();
   } catch (error) {
     console.log(error);

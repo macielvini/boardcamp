@@ -2,8 +2,19 @@ import { connection } from "../server.js";
 
 export const getCustomers = async (req, res) => {
   const { customer } = req;
+  const offset = req.query.offset ? req.query.offset : null;
+  const limit = req.query.limit ? req.query.limit : null;
+
   try {
-    res.send(customer);
+    if (customer) {
+      return res.send(customer);
+    }
+
+    const customers = await connection.query(
+      "SELECT * FROM customers LIMIT $1 OFFSET $2",
+      [limit, offset]
+    );
+    res.send(customers.rows.reverse());
   } catch (error) {
     console.log(error);
     res.sendStatus(500);
