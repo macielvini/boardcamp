@@ -28,7 +28,6 @@ export const validateGame = async (req, res, next) => {
     if (gameExist.rowCount)
       return res.status(409).send({ message: "game already listed" });
 
-    console.log(categoryIdExist);
     next();
   } catch (error) {
     console.log(error);
